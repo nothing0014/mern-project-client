@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseService from "../services/course.service";
+import AuthService from "../services/auth.service";
 
 const PatchCourseComponent = (props) => {
   let { currentUser, setCurrentUser, patchCourseData, setPatchCourseData } =
@@ -35,8 +36,15 @@ const PatchCourseComponent = (props) => {
         navigate("/course");
       })
       .catch((error) => {
-        console.log(error.response);
-        setMessage(error.response.data);
+        if (error.response && error.response.status === 401) {
+          AuthService.logout(); //清空local storage
+          window.alert("Token 已過期，重定向到登入頁面");
+          setCurrentUser(null);
+          navigate("/login");
+        } else {
+          console.log(error.response);
+          setMessage(error.response.data);
+        }
       });
   };
 

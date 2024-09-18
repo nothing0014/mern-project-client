@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseService from "../services/course.service";
+import AuthService from "../services/auth.service";
 
 const CourseComponent = ({
   currentUser,
@@ -23,12 +24,22 @@ const CourseComponent = ({
           .then((data) => {
             setCourseData(data.data.foundCourses);
           })
-          .catch((e) => {
-            console.log(e);
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              AuthService.logout(); //清空local storage
+              window.alert("Token 已過期，重定向到登入頁面");
+              setCurrentUser(null);
+              navigate("/login");
+            }
           });
       })
       .catch((error) => {
-        console.log(error.response);
+        if (error.response && error.response.status === 401) {
+          AuthService.logout(); //清空local storage
+          window.alert("Token 已過期，重定向到登入頁面");
+          setCurrentUser(null);
+          navigate("/login");
+        }
       });
   };
 
@@ -41,12 +52,22 @@ const CourseComponent = ({
           .then((data) => {
             setCourseData(data.data.foundCourses);
           })
-          .catch((e) => {
-            console.log(e);
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              AuthService.logout(); //清空local storage
+              window.alert("Token 已過期，重定向到登入頁面");
+              setCurrentUser(null);
+              navigate("/login");
+            }
           });
       })
       .catch((error) => {
-        console.log(error.response);
+        if (error.response && error.response.status === 401) {
+          AuthService.logout(); //清空local storage
+          window.alert("Token 已過期，重定向到登入頁面");
+          setCurrentUser(null);
+          navigate("/login");
+        }
       });
   };
 
@@ -59,16 +80,26 @@ const CourseComponent = ({
           .then((data) => {
             setCourseData(data.data.foundCourses);
           })
-          .catch((e) => {
-            console.log(e);
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              AuthService.logout(); //清空local storage
+              window.alert("Token 已過期，重定向到登入頁面");
+              setCurrentUser(null);
+              navigate("/login");
+            }
           });
       } else if (currentUser.user.role == "student") {
         CourseService.getEnrolledCourse(_id)
           .then((data) => {
             setCourseData(data.data.foundCourses);
           })
-          .catch((e) => {
-            console.log(e);
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              AuthService.logout(); //清空local storage
+              window.alert("Token 已過期，重定向到登入頁面");
+              setCurrentUser(null);
+              navigate("/login");
+            }
           });
       }
     }

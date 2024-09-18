@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseService from "../services/course.service";
+import AuthService from "../services/auth.service";
 
 const EnrollComponent = (props) => {
   let { currentUser, setCurrentUser } = props;
@@ -26,22 +27,34 @@ const EnrollComponent = (props) => {
           setMessage("");
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          AuthService.logout(); //清空local storage
+          window.alert("Token 已過期，重定向到登入頁面");
+          setCurrentUser(null);
+          navigate("/login");
+        }
       });
   };
   const handleEnroll = (e) => {
     CourseService.enroll(e.target.id)
       .then((data) => {
         if (data.data.result == "success") {
-          window.alert("註冊成功，重新導向至課程頁面");
-          navigate("/course");
+          AuthService.logout(); //清空local storage
+          window.alert("Token 已過期，重定向到登入頁面");
+          setCurrentUser(null);
+          navigate("/login");
         } else {
           setMessage("此課程你已經註冊過了!");
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          AuthService.logout(); //清空local storage
+          window.alert("Token 已過期，重定向到登入頁面");
+          setCurrentUser(null);
+          navigate("/login");
+        }
       });
   };
 
