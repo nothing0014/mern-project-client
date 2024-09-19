@@ -40,10 +40,8 @@ const EnrollComponent = (props) => {
     CourseService.enroll(e.target.id)
       .then((data) => {
         if (data.data.result == "success") {
-          AuthService.logout(); //清空local storage
-          window.alert("Token 已過期，重定向到登入頁面");
-          setCurrentUser(null);
-          navigate("/login");
+          window.alert("已成功註冊課程，將導向個人課程頁面");
+          navigate("/course");
         } else {
           setMessage("此課程你已經註冊過了!");
         }
