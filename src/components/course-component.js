@@ -40,7 +40,7 @@ const CourseComponent = ({
         } else {
           alert(`課程 "${message.title} "已被更新`);
         }
-        setrefresh(refresh * -1);
+        setrefresh((prevRefresh) => prevRefresh * -1);
       }
       // alert(event.data);
     };
