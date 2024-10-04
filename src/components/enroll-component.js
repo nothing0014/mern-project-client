@@ -80,6 +80,7 @@ const EnrollComponent = (props) => {
             onChange={handleChangeInput}
             type="text"
             className="form-control"
+            style={{ width: "10%" }}
           />
           <button onClick={handleSearch} className="btn btn-primary">
             Search

@@ -9,6 +9,52 @@ const CourseComponent = ({
   patchCourseData,
   setPatchCourseData,
 }) => {
+  let [refresh, setrefresh] = useState(1);
+
+  useEffect(() => {
+    // 連接到 WebSocket 伺服器
+    const wsUrl =
+      process.env.NODE_ENV === "production"
+        ? "wss://mern-project-server-gjrd.onrender.com" // 你部署的 WebSocket 伺服器網址
+        : "ws://localhost:8080"; // 本地開發環境
+    const ws = new WebSocket(wsUrl);
+
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+
+    ws.onopen = () => {
+      console.log("Connected to WebSocket");
+      ws.send(JSON.stringify({ token })); // 發送 JWT token 來認證
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      // 根據通知更新畫面，或顯示給使用者
+      if (message.action === "courseUpdated") {
+        if (message.newtitle !== message.title) {
+          alert(`課程 ${message.title} 被更新成 ${message.newtitle}`);
+        } else {
+          alert(`課程 "${message.title} "已被更新`);
+        }
+        setrefresh(refresh * -1);
+      }
+      // alert(event.data);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    // 清除 WebSocket 連接
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   const navigate = useNavigate();
   const handleTakeToLogin = () => {
     navigate("/login");
@@ -103,7 +149,7 @@ const CourseComponent = ({
           });
       }
     }
-  }, []);
+  }, [refresh]);
   return (
     <div style={{ padding: "3rem " }}>
       {!currentUser && (
